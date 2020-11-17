@@ -8,15 +8,15 @@ Julia + PYThon + R
 
 - jupyter magic manual
 
-<https://ipython.readthedocs.io/en/stable/interactive/magics.html>
+    <https://ipython.readthedocs.io/en/stable/interactive/magics.html>
 
-- %env
-- %run
-- %load
-- %store
-- %%time
-- %timeit
-- %%writefile
-- %pycat
-- %prun
-- %pdb
+    - %env
+    - %run
+    - %load
+    - %store
+    - %%time
+    - %timeit
+    - %%writefile
+    - %pycat
+    - %prun
+    - %pdb
