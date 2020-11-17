@@ -1,22 +1,24 @@
-# jupyter-test in cloud
-
-mybinder URL: <https://mybinder.org/v2/gh/hdouhua/jupyter-test.git/master>
-
-## jupyter
+# jupyter-test
 
 Julia + PYThon + R
 
-- jupyter magic manual
+to pick up python skill again
 
-    <https://ipython.readthedocs.io/en/stable/interactive/magics.html>
+## jupyter in cloud
 
-    - %env
-    - %run
-    - %load
-    - %store
-    - %%time
-    - %timeit
-    - %%writefile
-    - %pycat
-    - %prun
-    - %pdb
+mybinder URL: <https://mybinder.org/v2/gh/hdouhua/jupyter-test.git/master>
+
+## jupyter magic method
+
+<https://ipython.readthedocs.io/en/stable/interactive/magics.html>
+
+- %env
+- %run
+- %load
+- %store
+- %%time
+- %timeit
+- %%writefile
+- %pycat
+- %prun
+- %pdb
