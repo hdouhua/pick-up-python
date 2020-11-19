@@ -1,6 +1,6 @@
 # jupyter-test
 
-Julia + PYThon + R
+JUlia + PYThon + R
 
 to pick up python skill again
 

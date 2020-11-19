@@ -39,6 +39,10 @@ def solve():
         return sorted_word_cnt
 
 words = solve()
-with open('out.txt', 'w') as fout:
-    for word,count in words:
-        fout.write(f'{word} {count}\n')
+for word,count in words:
+    print(f'{word} {count}')
+
+# # write to file   
+# with open('out.txt', 'w') as fout:
+#     for word,count in words:
+#         fout.write(f'{word} {count}\n')
