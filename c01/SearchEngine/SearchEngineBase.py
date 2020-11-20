@@ -1,12 +1,16 @@
+import os
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
 
 class SearchEngineBase(object):
+
     def __init__(self):
         pass
 
     def add_corpus(self, file_path):
         with open(file_path, 'r') as fin:
             text = fin.read()
-        self.process_corpus(file_path, text)
+        self.process_corpus(file_path.replace(current_dir, '').replace('/',''), text)
 
     def process_corpus(self, id, text):
         raise Exception('process_corpus not implemented.')
@@ -16,7 +20,7 @@ class SearchEngineBase(object):
 
 def main(search_engine):
     for file_path in ['1.txt', '2.txt', '3.txt', '4.txt', '5.txt']:
-        search_engine.add_corpus(file_path)
+        search_engine.add_corpus(os.path.join(current_dir, file_path))
 
     while True:
         query = input()
