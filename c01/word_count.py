@@ -38,11 +38,12 @@ def solve():
         sorted_word_cnt = sorted(word_cnt.items(), key=lambda kv: kv[1], reverse=True)
         return sorted_word_cnt
 
-words = solve()
-for word,count in words:
-    print(f'{word} {count}')
+if __name__ == 'main':
+    words = solve()
+    for it, count in words:
+        print(f'{it} {count}')
 
-# # write to file   
-# with open('out.txt', 'w') as fout:
-#     for word,count in words:
-#         fout.write(f'{word} {count}\n')
+    # # write to file
+    # with open('out.txt', 'w') as fout:
+    #     for word,count in words:
+    #         fout.write(f'{word} {count}\n')
