@@ -2,19 +2,24 @@
     "python.linting.pylintEnabled": true,
     "python.formatting.provider": "yapf",
     // append the root of module here
-    "python.pythonPath": "/Users/user/miniconda3/envs/fine/bin/python",
+    "python.pythonPath": "~/miniconda3/envs/fine/bin/python",
     "python.autoComplete.extraPaths": [
-        "./c01/SearchEngine",
-        "./c01/ModuleTest/simple",
-        "./c01/ModuleTest/abspath",
+        "./practice/c01/SearchEngine",
+        "./practice/c01/ModuleTest/simple",
+        "./practice/c01/ModuleTest/abspath",
     ],
-    "python.envFile": "${workspaceFolder}/c01/.env",
+    "python.envFile": "${workspaceFolder}/practice/c01/.env",
     // configure code-runner
     "code-runner.executorMap": {
-        "python": "export $(cat c01/.env); python -u"
+        "python": "export $(cat practice/c01/.env); python -u"
     },
     "code-runner.runInTerminal": true,
     // "code-runner.clearPreviousOutput": true,
     // "code-runner.enableAppInsights": true
-    "jupyter.jupyterServerType": "local"
+    "jupyter.jupyterServerType": "local",
+    "python.analysis.extraPaths": [
+        "./practice/c01/SearchEngine",
+        "./practice/c01/ModuleTest/simple",
+        "./practice/c01/ModuleTest/abspath"
+    ]
 }
