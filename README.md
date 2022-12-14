@@ -6,7 +6,7 @@ to pick up python skill again
 
 ## setup runtime environment by annaconda
 
-please refer to the [cheatsheet of conda](./conda-cheatsheet.pdf)
+please refer to the [cheatsheet of conda](./res/conda-cheatsheet.pdf)
 
 - to create environment by cloning base
 
@@ -26,15 +26,9 @@ please refer to the [cheatsheet of conda](./conda-cheatsheet.pdf)
    jupyter lab
    ```
 
-## jupyter in cloud
-
-mybinder URL: <https://mybinder.org/v2/gh/hdouhua/jupyter-test.git/master>
-
 ## jupyter magic method
 
-<https://ipython.readthedocs.io/en/stable/interactive/magics.html>
-<https://www.dataquest.io/blog/jupyter-notebook-tips-tricks-shortcuts/>
-
+- [Built-in magic commands](https://ipython.readthedocs.io/en/stable/interactive/magics.html)
 - %env
 - %run
 - %load
@@ -45,3 +39,12 @@ mybinder URL: <https://mybinder.org/v2/gh/hdouhua/jupyter-test.git/master>
 - %pycat
 - %prun
 - %pdb
+
+## jupyter shortcuts
+
+- [Jupyter Notebook Keyboard Shortcuts](./res/jupyter-notebook-shortcuts.pdf)
+- [28 Jupyter Notebook Tips, Tricks, and Shortcuts](https://www.dataquest.io/blog/jupyter-notebook-tips-tricks-shortcuts/)
+
+## jupyter in cloud
+
+mybinder URL: <https://mybinder.org/v2/gh/hdouhua/jupyter-test.git/master>
