@@ -7,6 +7,7 @@
         "./practice/c01/SearchEngine",
         "./practice/c01/ModuleTest/simple",
         "./practice/c01/ModuleTest/abspath",
+        "./inv/shared/"
     ],
     "python.envFile": "${workspaceFolder}/practice/c01/.env",
     // configure code-runner
