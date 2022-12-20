@@ -20,8 +20,8 @@
 
 - 组合投资法 —— 参考「资产组合」
 - [支点投资法](./method-01.md)
-- [价值投资](./value-strategy.ipynb)
-- [量化投资](./quant.md)
+- [价值投资](./method-02.md)
+- [量化投资](./method-03.md)
 
 ### 资产组合
 
@@ -34,7 +34,8 @@
 
 - 大数投资 —— 基于大数定律的投资
 - [日历效应](./calendar-strrategy.ipynb)
-- [二八轮动](./rotation-strategy.ipynb)
+- [趋势跟踪](./trend-strategy.ipynb)
+- [轮动策略](./rotation-strategy.md)
 - 指数温度
 
 ### 估值法
