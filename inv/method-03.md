@@ -8,6 +8,7 @@
 它由六大模块组成：账户及策略管理模块、策略模块、交易模块、回测平台、业绩分析模块和数据中心。
 
 ```mermaid
+%%{ init: { 'flowchart': { 'curve': 'basis' } } }%%
 flowchart TB
   m1(账户及策略管理模块)
   m2(策略模块)
@@ -15,6 +16,15 @@ flowchart TB
   m4(回测平台)
   m5(业绩分析模块)
   m6[(数据中心)]
+
+subgraph Code
+  direction TB
+  m1
+  m2
+  m3
+  m4
+  m5
+end
 
   %% m5
   m5 <--> m6

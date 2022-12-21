@@ -17,8 +17,9 @@
 支点投资法是开放式的，针对的是独立的一次投资。为了建立投资闭环，需要对它进行一个小小的改造，就是在退出阶段之后加上「投资复盘」的环节（如下图）。不仅要复盘这次投资中成功的经验，还要复盘失败的经验，让它们都沉淀到投资体系里。
 
 ```mermaid
+%% https://mermaid.js.org/syntax/flowchart.html
+%%{ init: { 'flowchart': { 'curve': 'bump' } } }%%
 flowchart LR
-    %%{ init: { 'flowchart': { 'curve': 'bump' } } }%%
     s1_m1(设立支点)
     s1_m2(触发投资行为)
     s2_m1(验证支点)
