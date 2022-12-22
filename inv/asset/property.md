@@ -7,4 +7,4 @@
 
 ## 工具
 
-- [按揭贷款及还款计算](./housing-loan.ipynb)
+- [贷款还款计算器](../tools/housing-loan.ipynb)

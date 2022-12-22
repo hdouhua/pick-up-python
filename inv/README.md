@@ -12,30 +12,30 @@
 ### 有哪些投资标的
 
 - 固收类投资标的：预期收益固定的投资，包括债券、保险、银行理财
-- 股票类投资标的：波动大、收益高、风险也高。包括股票、[股票型基金](./fund.md)
-- 实物类投资标的：投资金额较大、流动性较差。典型的包括[房产](./property.md)、大众商品（黄金、原油）、艺术收藏品等。
+- 股票类投资标的：波动大、收益高、风险也高。包括股票、[股票型基金](./asset/fund.md)
+- 实物类投资标的：投资金额较大、流动性较差。典型的包括[房产](./asset/property.md)、大众商品（黄金、原油）、艺术收藏品等。
 - 新兴投资标的：数字货币等
 
 ### 投资方法
 
 - 组合投资法 —— 参考「资产组合」
-- [支点投资法](./method-01.md)
-- [价值投资](./method-02.md)
-- [量化投资](./method-03.md)
+- [支点投资法](./methodology/01.md)
+- [价值投资](./methodology/02.md)
+- [量化投资](./methodology/03.md)
 
 ### 资产组合
 
-- [永久组合](./portfolio-01.md) —— 可盲投一辈子的组合
-- [股债组合](./portfolio-02.md)
-- [风险平价组合](./portfolio-03.md)
-- [耶鲁组合](./portfolio-04.md)
+- [永久组合](./asset-portfolio/01.md) —— 可盲投一辈子的组合
+- [股债组合](./asset-portfolio/02.md)
+- [风险平价组合](./asset-portfolio/03.md)
+- [耶鲁组合](./asset-portfolio/04.md)
 
 ### 量化策略
 
 - 大数投资 —— 基于大数定律的投资
-- [日历效应](./calendar-strrategy.ipynb)
-- [趋势跟踪](./trend-strategy.ipynb)
-- [轮动策略](./rotation-strategy.md)
+- [日历效应](./strategy/calendar-strrategy.ipynb)
+- [趋势跟踪](./strategy/trend-strategy.ipynb)
+- [轮动策略](./strategy/rotation-strategy.md)
 - 指数温度
 
 ### 估值法
