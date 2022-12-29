@@ -7,4 +7,4 @@
 
 ## 工具
 
-- [贷款还款计算器](../tools/housing-loan.ipynb)
+- [首付多少？还款年限多长？](../tools/housing-loan.ipynb)

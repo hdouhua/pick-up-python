@@ -13,7 +13,7 @@
 
 - 固收类投资标的：预期收益固定的投资，包括债券、保险、银行理财
 - 股票类投资标的：波动大、收益高、风险也高。包括股票、[股票型基金](./asset/fund.md)
-- 实物类投资标的：投资金额较大、流动性较差。典型的包括[房产](./asset/property.md)、大众商品（黄金、原油）、艺术收藏品等。
+- 实物类投资标的：投资金额较大、流动性较差。典型的包括 [房产](./asset/property.md)、大众商品（黄金、原油）、艺术收藏品等。
 - 新兴投资标的：数字货币等
 
 ### 投资方法
@@ -34,7 +34,7 @@
 
 - 大数投资 —— 基于大数定律的投资
 - [日历效应](./strategy/calendar-strrategy.ipynb)
-- [趋势跟踪](./strategy/trend-strategy.ipynb)
+- [趋势跟踪](./strategy/trend-strategy.md)
 - [轮动策略](./strategy/rotation-strategy.md)
 - 指数温度
 
@@ -46,3 +46,11 @@
 - [巴菲特指标](https://www.gurufocus.cn/indicator/global_market_valuation/CHN)
 - 乐观指数 —— 基于均值回归
 - 
+
+## 拓展
+
+- [海通证券研究所](https://www.htsec.com/ChannelHome/2016102402/index.shtml)
+- [华创证券研究所](https://cj.hczq.com/index)
+- [主动投资组合管理](https://book.douban.com/subject/25984361/)
+- [巴菲特致股东的信合集](https://xueqiu.com/6217262310/141776956)
+- [新加坡淡马锡资产组合](https://www.temasek.com.sg/en/our-investments/our-portfolio/)
