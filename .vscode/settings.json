@@ -1,15 +1,13 @@
 {
     "python.linting.pylintEnabled": true,
     "python.formatting.provider": "yapf",
-    // append the root of module here
-    "python.pythonPath": "~/miniconda3/envs/fine/bin/python",
     "python.autoComplete.extraPaths": [
         "./practice/c01/SearchEngine",
         "./practice/c01/ModuleTest/simple",
         "./practice/c01/ModuleTest/abspath",
-        "./inv/shared/"
+        "./inv/strategy/shared"
     ],
-    "python.envFile": "${workspaceFolder}/practice/c01/.env",
+    // "python.envFile": "${workspaceFolder}/practice/c01/.env",
     // configure code-runner
     "code-runner.executorMap": {
         "python": "export $(cat practice/c01/.env); python -u"
@@ -17,10 +15,4 @@
     "code-runner.runInTerminal": true,
     // "code-runner.clearPreviousOutput": true,
     // "code-runner.enableAppInsights": true
-    "jupyter.jupyterServerType": "local",
-    "python.analysis.extraPaths": [
-        "./practice/c01/SearchEngine",
-        "./practice/c01/ModuleTest/simple",
-        "./practice/c01/ModuleTest/abspath"
-    ]
 }
