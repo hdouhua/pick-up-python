@@ -51,6 +51,8 @@
 
 - [海通证券研究所](https://www.htsec.com/ChannelHome/2016102402/index.shtml)
 - [华创证券研究所](https://cj.hczq.com/index)
-- [主动投资组合管理](https://book.douban.com/subject/25984361/)
+- [BigQuant](https://bigquant.com/wiki/)
 - [巴菲特致股东的信合集](https://xueqiu.com/6217262310/141776956)
 - [新加坡淡马锡资产组合](https://www.temasek.com.sg/en/our-investments/our-portfolio/)
+- [主动投资组合管理](https://book.douban.com/subject/25984361/)
+- [现代投资组合理论与投资分析]()

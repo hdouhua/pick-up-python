@@ -1,6 +1,16 @@
 import datetime
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
+
+
+def set_plot_font(font_file):
+    # set font
+    from matplotlib import font_manager
+    font_manager.fontManager.addfont(font_file)
+    # plt.rc('font', family='Microsoft YaHei')
+    # or
+    plt.rcParams['font.family'] = 'Microsoft YaHei'
 
 
 def get_drawdown(p):

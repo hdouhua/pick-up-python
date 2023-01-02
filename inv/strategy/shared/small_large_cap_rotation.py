@@ -1,4 +1,3 @@
-import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import datetime
@@ -16,7 +15,7 @@ def get_widgets():
                    description='Start:',
                    disabled=False,
                    layout=Layout(flex='1 1 auto', width='auto')),
-        DatePicker(value=datetime.date(2022, 12, 16),
+        DatePicker(value=datetime.date(2022, 12, 31),
                    description='End:',
                    disabled=False,
                    layout=Layout(flex='1 1 auto', width='auto')),
@@ -38,7 +37,7 @@ def get_widgets():
             ('沪港深500', '30455'),
             ('500SNLV', '930782'),
             ('500成长估值', '930938'),
-            ('创成长', '930938'),
+            ('创成长', '399296'),
             ('创业板指', '399006'),
             ('中小板指', '399005'),
         ],
@@ -54,6 +53,10 @@ def get_widgets():
             ('300成长', '000918'),
             ('深证300', '399007'),
             ('300消费', '000912'),
+            ('消费红利', '30094'),
+            ('上证消费', '000036'),
+            ('中证消费', '000932'),
+            ('消费龙头', '931068'),
         ],
                value='000300',
                rows=10,
@@ -176,7 +179,7 @@ def run_strategy(index_price, rotation_type, params):
 
 
 def backtest_result(df, title):
-    ret_df = df.loc[:, ['large', 'small', 'stgy']]
+    ret_df = df.loc[:, ['small', 'large', 'stgy']]
 
     fig = plt.figure(figsize=(20, 10))
     ax1 = fig.add_subplot(2, 1, 1)
