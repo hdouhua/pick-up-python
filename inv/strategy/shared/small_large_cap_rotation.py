@@ -3,8 +3,7 @@ import matplotlib.pyplot as plt
 import datetime
 from enum import Enum
 
-import ipywidgets as widgets
-from ipywidgets import DatePicker, Select, Layout, Box, VBox
+from ipywidgets import DatePicker, IntSlider, Select, Layout, Box, VBox
 
 from tools import get_drawdown, cal_period_perf_indicator, datestr2dtdate
 
@@ -19,7 +18,7 @@ def get_widgets():
                    description='End:',
                    disabled=False,
                    layout=Layout(flex='1 1 auto', width='auto')),
-        widgets.IntSlider(value=21,
+        IntSlider(value=21,
                           min=5,
                           max=100,
                           step=1,
