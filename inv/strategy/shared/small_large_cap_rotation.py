@@ -3,9 +3,20 @@ import matplotlib.pyplot as plt
 import datetime
 from enum import Enum
 
-from ipywidgets import DatePicker, IntSlider, Select, Layout, Box, VBox
+from ipywidgets import DatePicker, IntSlider, Select, Checkbox, Layout, Box, VBox
 
-from tools import get_drawdown, cal_period_perf_indicator, datestr2dtdate
+from tools import get_drawdown, cal_period_perf_indicator, datestr2dtdate, SymbolCategry, get_symbols_by_categry
+
+
+class RotationType(Enum):
+    """
+    1 - 满仓
+    2- 可空仓
+    3 - 增强
+    """
+    Full = 1
+    Nullable = 2
+    Enhanced = 3
 
 
 def get_widgets():
@@ -19,48 +30,27 @@ def get_widgets():
                    disabled=False,
                    layout=Layout(flex='1 1 auto', width='auto')),
         IntSlider(value=21,
-                          min=5,
-                          max=100,
-                          step=1,
-                          description='N days:',
-                          disabled=False,
-                          continuous_update=False,
-                          orientation='horizontal',
-                          readout=True,
-                          readout_format='d'),
+                  min=5,
+                  max=100,
+                  step=1,
+                  description='N days:',
+                  disabled=False,
+                  continuous_update=False,
+                  orientation='horizontal',
+                  readout=True,
+                  readout_format='d'),
     ]
     symbols = [
-        Select(options=[
-            ('中证500', '000905'),
-            ('500质量', '930939'),
-            ('沪港深500', '30455'),
-            ('500SNLV', '930782'),
-            ('500成长估值', '930938'),
-            ('创成长', '399296'),
-            ('创业板指', '399006'),
-            ('中小板指', '399005'),
-        ],
-               value='000905',
+        Select(options=get_symbols_by_categry(SymbolCategry.SmallCap),
                rows=10,
                description='Small-Cap:',
                disabled=False),
-        Select(options=[
-            ('沪深300', '000300'),
-            ('300价值', '000919'),
-            ('沪港深300', '931395'),
-            ('300质量', '931155'),
-            ('300成长', '000918'),
-            ('深证300', '399007'),
-            ('300消费', '000912'),
-            ('消费红利', '30094'),
-            ('上证消费', '000036'),
-            ('中证消费', '000932'),
-            ('消费龙头', '931068'),
-        ],
-               value='000300',
+        Checkbox(value=False, description='Fund ?', disabled=False, indent=False),
+        Select(options=get_symbols_by_categry(SymbolCategry.LargeCap),
                rows=10,
                description='Large-Cap:',
                disabled=False),
+        Checkbox(value=False, description='Fund ?', disabled=True, indent=False),
     ]
 
     box1 = Box(children=datePickers)
@@ -86,36 +76,18 @@ def _get_T_dates():
 def _read_csv(csv_file, cols=None):
     df = pd.read_csv(csv_file).set_index('datetime')
     df.index = [datestr2dtdate(e) for e in df.index]
-    df.drop(['acc_close', 'pe', 'pe_pct80', 'pe_pct20', 'pe_pct50'], axis=1, inplace=True)
+
+    try:
+        df.drop(['acc_close', 'pe', 'pe_pct80', 'pe_pct20', 'pe_pct50'], axis=1, inplace=True)
+    except:
+        # ignore exception
+        pass
+
     if cols:
         df.rename(columns=cols, inplace=True)
 
     # print(df.head(50))
     return df
-
-
-class RotationType(Enum):
-    """
-    1 - 满仓
-    2- 可空仓
-    3 - 增强
-    """
-    Full = 1
-    Nullable = 2
-    Enhanced = 3
-
-
-def load_data(small_index, large_index):
-    small_price = _read_csv(f'../res/small/{small_index}.csv', cols={
-        'close': 'small',
-        'pe_pct': 'small_pe_pct',
-    })
-    large_price = _read_csv(f'../res/large/{large_index}.csv', cols={
-        'close': 'large',
-        'pe_pct': 'large_pe_pct',
-    })
-
-    return pd.merge(large_price, small_price, left_index=True, right_index=True)
 
 
 def run_strategy(index_price, rotation_type, params):
@@ -187,9 +159,38 @@ def backtest_result(df, title):
     plt.xlim(df.index[0], df.index[-1])
 
     ax2 = fig.add_subplot(2, 1, 2)
-    df[['pos_large', 'pos_small']].plot(ax=ax2, kind='area', stacked=True, grid=True)
+    df[['pos_small', 'pos_large']].plot(ax=ax2, kind='area', stacked=True, grid=True)
     plt.xlim(df.index[0], df.index[-1])
 
     res = cal_period_perf_indicator(ret_df)
     res['TotalRet'] = ret_df.iloc[-1] - 1
     print(res)
+
+
+def load_data(small_index, large_index, small_is_fund, large_is_fund):
+    if small_is_fund:
+        small_cols = {
+            'nav': 'small',
+            'pe_pct': 'small_pe_pct',
+        }
+    else:
+        small_cols = {
+            'close': 'small',
+            'pe_pct': 'small_pe_pct',
+        }
+
+    if large_is_fund:
+        large_cols = {
+            'nav': 'large',
+            'pe_pct': 'large_pe_pct',
+        }
+    else:
+        large_cols = {
+            'close': 'large',
+            'pe_pct': 'large_pe_pct',
+        }
+
+    small_price = _read_csv(f'../res/small/{small_index}.csv', cols=small_cols)
+    large_price = _read_csv(f'../res/large/{large_index}.csv', cols=large_cols)
+
+    return pd.merge(large_price, small_price, left_index=True, right_index=True)

@@ -3,21 +3,13 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from os.path import exists
-from enum import Enum
 from ipywidgets import DatePicker, IntSlider, Select, Checkbox, Box, HBox, VBox
 
-from shared.tools import get_drawdown, cal_period_perf_indicator, datestr2dtdate, date_count_in_month
+from shared.tools import get_drawdown, cal_period_perf_indicator, datestr2dtdate, date_count_in_month, \
+    SymbolCategry, get_symbols_by_categry
 
 
-class SymbolType(Enum):
-    Default = 0
-    Divident = 1
-    SmallCap = 2
-    LargeCap = 3
-    Specialization = 4
-
-
-def get_widgets(symbol_type=SymbolType.Default):
+def get_widgets(symbol_type=SymbolCategry.Default):
     datePickers = [
         DatePicker(
             value=datetime.date(2020, 1, 1),
@@ -53,87 +45,33 @@ def get_widgets(symbol_type=SymbolType.Default):
                   readout_format='d'),
     ]
 
-    if symbol_type == SymbolType.SmallCap:
+    if symbol_type == SymbolCategry.SmallCap:
         symbols = [
-            Select(options=[
-                ('中证500', '000905'),
-                ('中证500ETF', '510500'),
-                ('基金 - 富国500', '161017'),
-                ('基金 - 南方500', '160119'),
-                ('500质量', '930939'),
-                ('鹏扬中证500质量成长ETF', '560500'),
-                ('沪港深500', '30455'),
-                ('500SNLV', '930782'),
-                ('基金 - 景顺长城中证500行业中性低波', '003318'),
-                ('500成长估值', '930938'),
-                ('创成长', '399296'),
-                ('华夏创成长ETF', '159967'),
-                ('创业板指', '399006'),
-                ('深创100', '399088'),
-                ('中小板指', '399005'),
-            ],
+            Select(options=get_symbols_by_categry(SymbolCategry.SmallCap),
                    value='000905',
                    rows=7,
                    description='Symbol:',
                    disabled=False),
         ]
-    elif symbol_type == SymbolType.LargeCap:
+    elif symbol_type == SymbolCategry.LargeCap:
         symbols = [
-            Select(options=[
-                ('沪深300', '000300'),
-                ('300价值', '000919'),
-                ('沪港深300', '931395'),
-                ('300质量', '931155'),
-                ('300成长', '000918'),
-                ('深证300', '399007'),
-                ('300消费', '000912'),
-            ],
+            Select(options=get_symbols_by_categry(SymbolCategry.LargeCap),
                    value='000300',
                    rows=7,
                    description='Symbol:',
                    disabled=False),
         ]
-    elif symbol_type == SymbolType.Divident:
+    elif symbol_type == SymbolCategry.Divident:
         symbols = [
-            Select(options=[
-                ('红利低波', '30269'),
-                ('红利LV', '512890'),
-                ('红利低波100', '930955'),
-                ('红利低波100ETF', '515100'),
-                ('红利指数', '000015'),
-                ('华泰柏瑞上证红利ETF', '510880'),
-                ('300 红利', '000821'),
-                ('建信沪深300红利ETF', '512530'),
-                ('国企红利', '000824'),
-                ('国企红利LOF', '501059'),
-                ('中证红利', '000922'),
-                ('招商中证红利ETF', '515080'),
-                ('易方达中证红利ETF', '515180'),
-                ('红利潜力', '30089'),
-                ('基金 - 红利潜力', '007671'),
-                ('消费红利', '30094'),
-                ('上证消费', '000036'),
-                ('中证消费', '000932'),
-                ('基金 - 泰达消费红利指数A', '008928'),
-                ('深证红利', '399324'),
-                ('深证红利ETF', '159905'),
-            ],
+            Select(options=get_symbols_by_categry(SymbolCategry.Divident),
                    value='30269',
                    rows=7,
                    description='Symbol:',
                    disabled=False),
         ]
-    elif symbol_type == SymbolType.Specialization:
+    elif symbol_type == SymbolCategry.Specialization:
         symbols = [
-            Select(options=[
-                ('医药100', '000978'),
-                ('基金 - 医药100', '000059'),
-                ('300医药ETF', '512010'),
-                ('广发中证全指医药卫生ETF', '159938'),
-                ('中证生科', '930743'),
-                ('中证白酒', '399997'),
-                ('基金 - 招商中证白酒指数A', '161725'),
-            ],
+            Select(options=get_symbols_by_categry(SymbolCategry.Specialization),
                    value='000978',
                    rows=7,
                    description='Symbol:',
