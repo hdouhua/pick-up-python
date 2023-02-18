@@ -9,16 +9,16 @@ class SymbolCategry(Enum):
     """
     Default is None
     """
-    Default = 0
-    Divident = 1
-    SmallCap = 2
-    LargeCap = 3
-    Specialization = 4
+    DEFAULT = 0
+    DIVIDENT = 1
+    SMALL_CAP = 2
+    LARGE_CAP = 3
+    SPECIALIZATION = 4
 
 
 def get_symbols_by_categry(categry):
     symbols = None
-    if categry == SymbolCategry.SmallCap:
+    if categry == SymbolCategry.SMALL_CAP:
         symbols = [
             ('中证500', '000905'),
             ('中证500ETF', '510500'),
@@ -36,7 +36,7 @@ def get_symbols_by_categry(categry):
             ('深创100', '399088'),
             ('中小板指', '399005'),
         ]
-    elif categry == SymbolCategry.LargeCap:
+    elif categry == SymbolCategry.LARGE_CAP:
         symbols = [
             ('沪深300', '000300'),
             ('300价值', '000919'),
@@ -50,7 +50,7 @@ def get_symbols_by_categry(categry):
             ('中证消费', '000932'),
             ('消费龙头', '931068'),
         ]
-    elif categry == SymbolCategry.Divident:
+    elif categry == SymbolCategry.DIVIDENT:
         symbols = [
             ('红利低波', '30269'),
             ('红利LV', '512890'),
@@ -74,7 +74,7 @@ def get_symbols_by_categry(categry):
             ('深证红利', '399324'),
             ('深证红利ETF', '159905'),
         ]
-    elif categry == SymbolCategry.Specialization:
+    elif categry == SymbolCategry.SPECIALIZATION:
         symbols = [
             ('医药100', '000978'),
             ('基金 - 医药100', '000059'),
@@ -97,7 +97,7 @@ def set_plot_font(font_file):
     plt.rcParams['font.family'] = 'Microsoft YaHei'
 
 
-def get_drawdown(p):
+def get_drawdown(price_serie):
     """
     计算净值回撤
     """
@@ -108,10 +108,10 @@ def get_drawdown(p):
     # dd = [p[t] / hmax[t] - 1 for t in range(T)]
 
     # yet, another way
-    hmax = p.cummax()
-    dd = p / hmax - 1
+    hmax = price_serie.cummax()
+    drawdown = price_serie / hmax - 1
 
-    return dd
+    return drawdown
 
 
 def cal_period_perf_indicator(adjnav):
@@ -119,7 +119,7 @@ def cal_period_perf_indicator(adjnav):
     计算区间业绩指标: 输入必须是日频净值
     """
 
-    if type(adjnav) == pd.DataFrame:
+    if isinstance(adjnav, pd.DataFrame):
         res = pd.DataFrame(index=adjnav.columns, columns=['AnnRet', 'AnnVol', 'SR', 'MaxDD', 'Calmar'])
         for col in adjnav:
             res.loc[col] = cal_period_perf_indicator(adjnav[col])
@@ -134,19 +134,19 @@ def cal_period_perf_indicator(adjnav):
 
     annvol = np.nanstd(ret) * np.sqrt(242)
 
-    sr = annret / annvol
-    dd = get_drawdown(adjnav)
-    mdd = np.nanmin(dd)
+    sortino_ratio = annret / annvol
+    drawdown = get_drawdown(adjnav)
+    mdd = np.nanmin(drawdown)
     calmar = annret / -mdd
 
-    return [annret, annvol, sr, mdd, calmar]
+    return [annret, annvol, sortino_ratio, mdd, calmar]
 
 
-def datestr2dtdate(datestr, format='%Y-%m-%d'):
+def datestr2dtdate(datestr, fmt='%Y-%m-%d'):
     """
     日期格式转换：'yyyy-mm-dd' 转为 datetime.date
     """
-    return datetime.datetime.strptime(datestr, format).date()
+    return datetime.datetime.strptime(datestr, fmt).date()
 
 
 def date_count_in_month(dates):
@@ -191,7 +191,7 @@ def get_hist_data(data_file, index_ids=None, end_date=None):
     # 从csv文件获取指数价格数据
     data = pd.read_csv(data_file).set_index('datetime')
     data.index = [datestr2dtdate(e) for e in data.index]
-    print('基础数据起止日期：%s，%s' % (data.index[0], data.index[-1]))
+    print(f'基础数据起止日期：{data.index[0]}，{data.index[-1]}')
     if index_ids is not None:
         data = data.loc[:, index_ids]
     if end_date is not None:

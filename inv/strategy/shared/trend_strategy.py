@@ -1,15 +1,14 @@
+from os.path import exists
 import datetime
-import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from os.path import exists
-from ipywidgets import DatePicker, IntSlider, FloatSlider, Select, Checkbox, Layout, Box, VBox, HBox
 
-from tools import get_drawdown, cal_period_perf_indicator, datestr2dtdate, SymbolCategry, get_symbols_by_categry
+from ipywidgets import DatePicker, IntSlider, FloatSlider, Select, Checkbox, Layout, Box, HBox
+from tools import cal_period_perf_indicator, datestr2dtdate, SymbolCategry, get_symbols_by_categry
 
 
 def get_widgets():
-    datePickers = [
+    date_pickers = [
         DatePicker(value=datetime.date(2020, 1, 1),
                    description='Start:',
                    disabled=False,
@@ -20,19 +19,19 @@ def get_widgets():
                    layout=Layout(flex='1 1 auto', width='auto')),
     ]
 
-    symbol_list = get_symbols_by_categry(SymbolCategry.SmallCap) \
-        + get_symbols_by_categry(SymbolCategry.LargeCap) \
-        + get_symbols_by_categry(SymbolCategry.Divident) \
-        + get_symbols_by_categry(SymbolCategry.Specialization)
+    symbol_list = get_symbols_by_categry(SymbolCategry.SMALL_CAP) \
+        + get_symbols_by_categry(SymbolCategry.LARGE_CAP) \
+        + get_symbols_by_categry(SymbolCategry.DIVIDENT) \
+        + get_symbols_by_categry(SymbolCategry.SPECIALIZATION)
     symbols = [
         Select(options=symbol_list, rows=10, description='Target:', disabled=False),
         Checkbox(value=False, description='Fund ?', disabled=False, indent=False),
     ]
 
-    box1 = Box(children=datePickers)
+    box1 = Box(children=date_pickers)
     box2 = Box(children=symbols)
 
-    return (HBox(children=(box1, box2)), datePickers, symbols)
+    return (HBox(children=(box1, box2)), date_pickers, symbols)
 
 
 def get_widgets_for_memontun():
@@ -166,26 +165,26 @@ def load_hist_data(symbol_id, col_mappings=None, folder='../res'):
     return None
 
 
-def memontun(df, symbol_id, N=20, long_threshold=0.05, short_threshold=-0.05):
+def memontun(df, symbol_id, n_day=20, long_threshold=0.05, short_threshold=-0.05):
     if df.size == 0:
         return
 
     df['ret'] = df[symbol_id].pct_change()
     df['asset'] = (1 + df['ret']).cumprod().fillna(1)
-    df['N_day_ret'] = df['asset'] / df['asset'].shift(N) - 1
+    df['N_day_ret'] = df['asset'] / df['asset'].shift(n_day) - 1
     df['pos'] = [1 if e > long_threshold else 0 if e < short_threshold else 0.5 for e in df['N_day_ret'].shift(1)]
     df['stgy_ret'] = df['ret'] * df['pos']
     df['stgy'] = (1 + df['stgy_ret']).cumprod().fillna(1)
 
 
-def mv_cross(df, symbol_id, N1=22, N2=55, long_threshold=1.05, short_threshold=0.95):
+def mv_cross(df, symbol_id, n_day1=22, n_day2=55, long_threshold=1.05, short_threshold=0.95):
     if df.size == 0:
         return
     df['ret'] = df[symbol_id].pct_change()
     df['asset'] = (1 + df['ret']).cumprod().fillna(1)
     df['ret'] = df['asset'].pct_change()
-    df['MA1'] = df['asset'].rolling(window=N1).mean()
-    df['MA2'] = df['asset'].rolling(window=N2).mean()
+    df['MA1'] = df['asset'].rolling(window=n_day1).mean()
+    df['MA2'] = df['asset'].rolling(window=n_day2).mean()
     df['MA1/MA2'] = df['MA1'] / df['MA2']
     df['pos'] = [1 if e > long_threshold else 0 if e < short_threshold else 0.5 for e in df['MA1/MA2'].shift(1)]
 
@@ -193,29 +192,29 @@ def mv_cross(df, symbol_id, N1=22, N2=55, long_threshold=1.05, short_threshold=0
     df['stgy'] = (1 + df['stgy_ret']).cumprod().fillna(1)
 
 
-def bolling_band(df, symbol_id, N=20):
+def bolling_band(df, symbol_id, n_day=20):
     df['ret'] = df[symbol_id].pct_change()
     df['asset'] = (1 + df['ret']).cumprod().fillna(1)
     df['ret'] = df['asset'].pct_change()
-    df['MA'] = df['asset'].rolling(window=N).mean()
-    df['std'] = df['asset'].rolling(window=N).std()
+    df['MA'] = df['asset'].rolling(window=n_day).mean()
+    df['std'] = df['asset'].rolling(window=n_day).std()
     df['up'] = df['MA'] + 2 * df['std']
     df['down'] = df['MA'] - 2 * df['std']
 
     df['pos'] = 0
     for i in range(1, len(df)):
-        t = df.index[i]
-        t0 = df.index[i - 1]
-        if df.loc[t0, 'asset'] > df.loc[t0, 'up']:
-            df.loc[t, 'pos'] = 1
-        elif df.loc[t0, 'asset'] < df.loc[t0, 'down']:
-            df.loc[t, 'pos'] = 0
-        elif df.loc[t0, 'pos'] == 1 and df.loc[t0, 'asset'] < df.loc[t0, 'MA']:
-            df.loc[t, 'pos'] = 0.5
-        elif df.loc[t0, 'pos'] == 0 and df.loc[t0, 'asset'] > df.loc[t0, 'MA']:
-            df.loc[t, 'pos'] = 0.5
+        t2 = df.index[i]
+        t1 = df.index[i - 1]
+        if df.loc[t1, 'asset'] > df.loc[t1, 'up']:
+            df.loc[t2, 'pos'] = 1
+        elif df.loc[t1, 'asset'] < df.loc[t1, 'down']:
+            df.loc[t2, 'pos'] = 0
+        elif df.loc[t1, 'pos'] == 1 and df.loc[t1, 'asset'] < df.loc[t1, 'MA']:
+            df.loc[t2, 'pos'] = 0.5
+        elif df.loc[t1, 'pos'] == 0 and df.loc[t1, 'asset'] > df.loc[t1, 'MA']:
+            df.loc[t2, 'pos'] = 0.5
         else:
-            df.loc[t, 'pos'] = df.loc[t0, 'pos']
+            df.loc[t2, 'pos'] = df.loc[t1, 'pos']
 
     df['stgy_ret'] = df['ret'] * df['pos']
     df['stgy'] = (1 + df['stgy_ret']).cumprod().fillna(1)

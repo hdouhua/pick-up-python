@@ -1,16 +1,15 @@
 import datetime
-import numpy as np
+from os.path import exists
 import pandas as pd
 import matplotlib.pyplot as plt
-from os.path import exists
 from ipywidgets import DatePicker, IntSlider, Select, Checkbox, Box, HBox, VBox
 
-from shared.tools import get_drawdown, cal_period_perf_indicator, datestr2dtdate, date_count_in_month, \
+from shared.tools import cal_period_perf_indicator, datestr2dtdate, date_count_in_month, \
     SymbolCategry, get_symbols_by_categry
 
 
-def get_widgets(symbol_type=SymbolCategry.Default):
-    datePickers = [
+def get_widgets(symbol_type=SymbolCategry.DEFAULT):
+    date_pickers = [
         DatePicker(
             value=datetime.date(2020, 1, 1),
             description='Start:',
@@ -22,7 +21,7 @@ def get_widgets(symbol_type=SymbolCategry.Default):
             disabled=False,
         ),
     ]
-    dayRange = [
+    day_range = [
         IntSlider(value=1,
                   min=1,
                   max=22,
@@ -45,33 +44,33 @@ def get_widgets(symbol_type=SymbolCategry.Default):
                   readout_format='d'),
     ]
 
-    if symbol_type == SymbolCategry.SmallCap:
+    if symbol_type == SymbolCategry.SMALL_CAP:
         symbols = [
-            Select(options=get_symbols_by_categry(SymbolCategry.SmallCap),
+            Select(options=get_symbols_by_categry(SymbolCategry.SMALL_CAP),
                    value='000905',
                    rows=7,
                    description='Symbol:',
                    disabled=False),
         ]
-    elif symbol_type == SymbolCategry.LargeCap:
+    elif symbol_type == SymbolCategry.LARGE_CAP:
         symbols = [
-            Select(options=get_symbols_by_categry(SymbolCategry.LargeCap),
+            Select(options=get_symbols_by_categry(SymbolCategry.LARGE_CAP),
                    value='000300',
                    rows=7,
                    description='Symbol:',
                    disabled=False),
         ]
-    elif symbol_type == SymbolCategry.Divident:
+    elif symbol_type == SymbolCategry.DIVIDENT:
         symbols = [
-            Select(options=get_symbols_by_categry(SymbolCategry.Divident),
+            Select(options=get_symbols_by_categry(SymbolCategry.DIVIDENT),
                    value='30269',
                    rows=7,
                    description='Symbol:',
                    disabled=False),
         ]
-    elif symbol_type == SymbolCategry.Specialization:
+    elif symbol_type == SymbolCategry.SPECIALIZATION:
         symbols = [
-            Select(options=get_symbols_by_categry(SymbolCategry.Specialization),
+            Select(options=get_symbols_by_categry(SymbolCategry.SPECIALIZATION),
                    value='000978',
                    rows=7,
                    description='Symbol:',
@@ -80,8 +79,8 @@ def get_widgets(symbol_type=SymbolCategry.Default):
     else:
         symbols = None
 
-    box1 = Box(children=datePickers)
-    box2 = Box(children=dayRange)
+    box1 = Box(children=date_pickers)
+    box2 = Box(children=day_range)
     vbox1 = VBox(children=(box1, box2))
 
     if symbols is not None:
@@ -90,7 +89,7 @@ def get_widgets(symbol_type=SymbolCategry.Default):
     else:
         box3 = Box()
 
-    return (HBox((vbox1, box3)), datePickers, dayRange, symbols)
+    return (HBox(children=(vbox1, box3)), date_pickers, day_range, symbols)
 
 
 def run_strategy(index_data, index_id, start_date, end_date, calendard_range, fee_rate):
