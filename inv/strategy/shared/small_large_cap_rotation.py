@@ -95,6 +95,8 @@ def run_strategy(index_price, rotation_type, params):
     n_day = params['N']
     start_date = params['start_date']
     end_date = params['end_date']
+    long_spread = params['long_spread'] if 'long_spread' in params else 0
+    short_spread = params['short_spread'] if 'short_spread' in params else 0
 
     df = index_price.copy()
     df = df.loc[start_date:end_date]
@@ -104,40 +106,49 @@ def run_strategy(index_price, rotation_type, params):
     df['N_day_ret_small'] = df['small'] / df['small'].shift(n_day) - 1
 
     # 设置仓位：在 large OR small
-
     df['momentum_large_vs_small'] = df['N_day_ret_large'] - df['N_day_ret_small']
     df['pos_large'] = [1 if e > 0 else 0 for e in df['momentum_large_vs_small'].shift(1)]
     df['pos_small'] = 1 - df['pos_large']
-
     if rotation_type == RotationType.FULL:
         pass
     elif rotation_type == RotationType.NULLABLE:
         df['pos_large'] = 0
         df['pos_small'] = 0
+
         for i in range(1, len(df)):
-            t2 = df.index[i]
             t1 = df.index[i - 1]
-            if df.loc[t1, 'N_day_ret_large'] >= df.loc[t1, 'N_day_ret_small'] and df.loc[t1, 'N_day_ret_large'] > 0:
+            t2 = df.index[i]
+            if df.loc[t1, 'N_day_ret_large'] >= df.loc[t1,'N_day_ret_small'] \
+                and df.loc[t1,'N_day_ret_large'] > long_spread:
                 df.loc[t2, 'pos_large'] = 1
-            elif df.loc[t1, 'N_day_ret_small'] > df.loc[t1, 'N_day_ret_large'] and df.loc[t1, 'N_day_ret_small'] > 0:
+            elif df.loc[t1, 'N_day_ret_small'] > df.loc[t1, 'N_day_ret_large'] \
+                and df.loc[t1, 'N_day_ret_small'] > long_spread:
                 df.loc[t2, 'pos_small'] = 1
+            else:
+                if df.loc[t1, 'N_day_ret_large'] < short_spread:
+                    df.loc[t2, 'pos_large'] = 0
+                if df.loc[t1, 'N_day_ret_small'] < short_spread:
+                    df.loc[t2, 'pos_small'] = 0
     elif rotation_type == RotationType.ENHANCED:
         t_date_range = _get_t_dates()
         # 可空仓区间：T <= 1.8
         for i in range(1, len(df)):
+            t1 = df.index[i - 1]
             t2 = df.index[i]
             if t2 <= t_date_range[1] or (t2 >= t_date_range[2] and t2 <= t_date_range[3]) \
                 or (t2 >= t_date_range[4] and t2 <= t_date_range[5]) \
                 or (t2 >= t_date_range[6] and t2 <= t_date_range[7]):
-                t1 = df.index[i - 1]
-                if df.loc[t1, 'N_day_ret_large'] >= df.loc[t1, 'N_day_ret_small'] and df.loc[t1, 'N_day_ret_large'] > 0:
+                if df.loc[t1, 'N_day_ret_large'] >= df.loc[t1, 'N_day_ret_small'] \
+                    and df.loc[t1, 'N_day_ret_large'] > long_spread:
                     df.loc[t2, 'pos_large'] = 1
-                elif df.loc[t1, 'N_day_ret_small'] > df.loc[t1, 'N_day_ret_large'] and df.loc[t1,
-                                                                                              'N_day_ret_small'] > 0:
+                elif df.loc[t1, 'N_day_ret_small'] > df.loc[t1, 'N_day_ret_large'] \
+                    and df.loc[t1, 'N_day_ret_small'] > long_spread:
                     df.loc[t2, 'pos_small'] = 1
                 else:
-                    df.loc[t2, 'pos_large'] = 0
-                    df.loc[t2, 'pos_small'] = 0
+                    if df.loc[t1, 'N_day_ret_large'] < short_spread:
+                        df.loc[t2, 'pos_large'] = 0
+                    if df.loc[t1, 'N_day_ret_small'] < short_spread:
+                        df.loc[t2, 'pos_small'] = 0
     else:
         raise NotImplementedError(f'not supported rotation_type [{rotation_type}]')
 
