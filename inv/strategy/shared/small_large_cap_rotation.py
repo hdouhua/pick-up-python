@@ -1,11 +1,11 @@
+from enum import Enum
+import datetime
 import pandas as pd
 import matplotlib.pyplot as plt
-import datetime
-from enum import Enum
 
 from ipywidgets import DatePicker, IntSlider, Select, Checkbox, Layout, Box, VBox
 
-from tools import get_drawdown, cal_period_perf_indicator, datestr2dtdate, SymbolCategry, get_symbols_by_categry
+from tools import cal_period_perf_indicator, datestr2dtdate, SymbolCategry, get_symbols_by_categry
 
 
 class RotationType(Enum):
@@ -14,13 +14,13 @@ class RotationType(Enum):
     2- 可空仓
     3 - 增强
     """
-    Full = 1
-    Nullable = 2
-    Enhanced = 3
+    FULL = 1
+    NULLABLE = 2
+    ENHANCED = 3
 
 
 def get_widgets():
-    datePickers = [
+    date_pickers = [
         DatePicker(value=datetime.date(2020, 1, 1),
                    description='Start:',
                    disabled=False,
@@ -29,7 +29,7 @@ def get_widgets():
                    description='End:',
                    disabled=False,
                    layout=Layout(flex='1 1 auto', width='auto')),
-        IntSlider(value=21,
+        IntSlider(value=20,
                   min=5,
                   max=100,
                   step=1,
@@ -41,26 +41,28 @@ def get_widgets():
                   readout_format='d'),
     ]
     symbols = [
-        Select(options=get_symbols_by_categry(SymbolCategry.SmallCap),
+        Select(options=get_symbols_by_categry(SymbolCategry.SMALL_CAP),
                rows=10,
                description='Small-Cap:',
                disabled=False),
         Checkbox(value=False, description='Fund ?', disabled=False, indent=False),
-        Select(options=get_symbols_by_categry(SymbolCategry.LargeCap),
+        Select(options=get_symbols_by_categry(SymbolCategry.LARGE_CAP),
                rows=10,
                description='Large-Cap:',
                disabled=False),
         Checkbox(value=False, description='Fund ?', disabled=True, indent=False),
     ]
 
-    box1 = Box(children=datePickers)
+    box1 = Box(children=date_pickers)
     box2 = Box(children=symbols)
 
-    return (VBox(children=(box1, box2)), datePickers, symbols)
+    return (VBox(children=(box1, box2)), date_pickers, symbols)
 
 
-def _get_T_dates():
-    # T 值的区间
+def _get_t_dates():
+    """
+    T 值的区间
+    """
     return [
         datetime.date(2010, 10, 11),
         datetime.date(2012, 8, 31),
@@ -79,9 +81,8 @@ def _read_csv(csv_file, cols=None):
 
     try:
         df.drop(['acc_close', 'pe', 'pe_pct80', 'pe_pct20', 'pe_pct50'], axis=1, inplace=True)
-    except:
-        # ignore exception
-        pass
+    except Exception as ex:
+        print(f'{ex} ignored')
 
     if cols:
         df.rename(columns=cols, inplace=True)
@@ -91,54 +92,65 @@ def _read_csv(csv_file, cols=None):
 
 
 def run_strategy(index_price, rotation_type, params):
-    N = params['N']
+    n_day = params['N']
     start_date = params['start_date']
     end_date = params['end_date']
+    long_spread = params['long_spread'] if 'long_spread' in params else 0
+    short_spread = params['short_spread'] if 'short_spread' in params else 0
 
     df = index_price.copy()
     df = df.loc[start_date:end_date]
     df['ret_large'] = df['large'].pct_change()
     df['ret_small'] = df['small'].pct_change()
-    df['N_day_ret_large'] = df['large'] / df['large'].shift(N) - 1
-    df['N_day_ret_small'] = df['small'] / df['small'].shift(N) - 1
+    df['N_day_ret_large'] = df['large'] / df['large'].shift(n_day) - 1
+    df['N_day_ret_small'] = df['small'] / df['small'].shift(n_day) - 1
 
     # 设置仓位：在 large OR small
-
     df['momentum_large_vs_small'] = df['N_day_ret_large'] - df['N_day_ret_small']
     df['pos_large'] = [1 if e > 0 else 0 for e in df['momentum_large_vs_small'].shift(1)]
     df['pos_small'] = 1 - df['pos_large']
-
-    if rotation_type == RotationType.Full:
+    if rotation_type == RotationType.FULL:
         pass
-    elif rotation_type == RotationType.Nullable:
+    elif rotation_type == RotationType.NULLABLE:
         df['pos_large'] = 0
         df['pos_small'] = 0
+
         for i in range(1, len(df)):
-            t = df.index[i]
-            t0 = df.index[i - 1]
-            if df.loc[t0, 'N_day_ret_large'] >= df.loc[t0, 'N_day_ret_small'] and df.loc[t0, 'N_day_ret_large'] > 0:
-                df.loc[t, 'pos_large'] = 1
-            elif df.loc[t0, 'N_day_ret_small'] > df.loc[t0, 'N_day_ret_large'] and df.loc[t0, 'N_day_ret_small'] > 0:
-                df.loc[t, 'pos_small'] = 1
-    elif rotation_type == RotationType.Enhanced:
-        t_date_range = _get_T_dates()
+            t1 = df.index[i - 1]
+            t2 = df.index[i]
+            if df.loc[t1, 'N_day_ret_large'] >= df.loc[t1,'N_day_ret_small'] \
+                and df.loc[t1,'N_day_ret_large'] > long_spread:
+                df.loc[t2, 'pos_large'] = 1
+            elif df.loc[t1, 'N_day_ret_small'] > df.loc[t1, 'N_day_ret_large'] \
+                and df.loc[t1, 'N_day_ret_small'] > long_spread:
+                df.loc[t2, 'pos_small'] = 1
+            else:
+                if df.loc[t1, 'N_day_ret_large'] < short_spread:
+                    df.loc[t2, 'pos_large'] = 0
+                if df.loc[t1, 'N_day_ret_small'] < short_spread:
+                    df.loc[t2, 'pos_small'] = 0
+    elif rotation_type == RotationType.ENHANCED:
+        t_date_range = _get_t_dates()
         # 可空仓区间：T <= 1.8
         for i in range(1, len(df)):
-            t = df.index[i]
-            if t <= t_date_range[1] or (t >= t_date_range[2] and t <= t_date_range[3]) \
-                or (t >= t_date_range[4] and t <= t_date_range[5]) \
-                or (t >= t_date_range[6] and t <= t_date_range[7]):
-                t0 = df.index[i - 1]
-                if df.loc[t0, 'N_day_ret_large'] >= df.loc[t0, 'N_day_ret_small'] and df.loc[t0, 'N_day_ret_large'] > 0:
-                    df.loc[t, 'pos_large'] = 1
-                elif df.loc[t0, 'N_day_ret_small'] > df.loc[t0, 'N_day_ret_large'] and df.loc[t0,
-                                                                                              'N_day_ret_small'] > 0:
-                    df.loc[t, 'pos_small'] = 1
+            t1 = df.index[i - 1]
+            t2 = df.index[i]
+            if t2 <= t_date_range[1] or (t2 >= t_date_range[2] and t2 <= t_date_range[3]) \
+                or (t2 >= t_date_range[4] and t2 <= t_date_range[5]) \
+                or (t2 >= t_date_range[6] and t2 <= t_date_range[7]):
+                if df.loc[t1, 'N_day_ret_large'] >= df.loc[t1, 'N_day_ret_small'] \
+                    and df.loc[t1, 'N_day_ret_large'] > long_spread:
+                    df.loc[t2, 'pos_large'] = 1
+                elif df.loc[t1, 'N_day_ret_small'] > df.loc[t1, 'N_day_ret_large'] \
+                    and df.loc[t1, 'N_day_ret_small'] > long_spread:
+                    df.loc[t2, 'pos_small'] = 1
                 else:
-                    df.loc[t, 'pos_large'] = 0
-                    df.loc[t, 'pos_small'] = 0
+                    if df.loc[t1, 'N_day_ret_large'] < short_spread:
+                        df.loc[t2, 'pos_large'] = 0
+                    if df.loc[t1, 'N_day_ret_small'] < short_spread:
+                        df.loc[t2, 'pos_small'] = 0
     else:
-        raise NotImplemented(f'not supported rotation_type [{rotation_type}]')
+        raise NotImplementedError(f'not supported rotation_type [{rotation_type}]')
 
     # 计算获利
     df['ret_stgy'] = df['ret_large'] * df['pos_large'] + df['ret_small'] * df['pos_small']

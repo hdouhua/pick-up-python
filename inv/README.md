@@ -33,7 +33,7 @@
 ### 量化策略
 
 - 大数投资 —— 基于大数定律的投资
-- [日历效应](./strategy/calendar-strrategy.ipynb)
+- [日历效应](./strategy/calendar-strategy.ipynb)
 - [趋势跟踪](./strategy/trend-strategy.md)
 - [轮动策略](./strategy/rotation-strategy.md)
 - 指数温度

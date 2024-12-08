@@ -9,11 +9,17 @@
         "./inv/strategy",
     ],
     // "python.envFile": "${workspaceFolder}/practice/c01/.env",
+    "python.analysis.extraPaths": [
+        "./practice/c01/SearchEngine",
+        "./practice/c01/ModuleTest/simple",
+        "./practice/c01/ModuleTest/abspath",
+        "./inv/strategy/shared"
+    ],
     // configure code-runner
     "code-runner.executorMap": {
         "python": "export $(cat practice/c01/.env); python -u"
     },
     "code-runner.runInTerminal": true,
-    // "code-runner.clearPreviousOutput": true,
-    // "code-runner.enableAppInsights": true
+    "code-runner.clearPreviousOutput": true,
+    "code-runner.enableAppInsights": true
 }
