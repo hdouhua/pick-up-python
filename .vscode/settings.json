@@ -1,11 +1,12 @@
 {
     "python.linting.pylintEnabled": true,
     "python.formatting.provider": "yapf",
-    "python.autoComplete.extraPaths": [
+    "python.analysis.extraPaths": [
         "./practice/c01/SearchEngine",
         "./practice/c01/ModuleTest/simple",
         "./practice/c01/ModuleTest/abspath",
-        "./inv/strategy/shared"
+        "./inv/strategy/shared",
+        "./inv/strategy",
     ],
     // "python.envFile": "${workspaceFolder}/practice/c01/.env",
     // configure code-runner
